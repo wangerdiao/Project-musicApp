@@ -6,10 +6,10 @@
             </svg>
         </div>
         <div class="topContent">
-            <sapn>我的</sapn>
-            <sapn class="active">发现</sapn>
-            <sapn>云村</sapn>
-            <sapn>视频</sapn>
+            <span>我的</span>
+            <span class="active">发现</span>
+            <span>云村</span>
+            <span>视频</span>
         </div>
         <div class="topRight">
              <svg class="icon" aria-hidden="true">
