@@ -4,6 +4,20 @@
         <div class="title">发现好歌单</div>
         <div class="more">查看更多</div>
     </div>
+    <div class="musicContent">
+        <van-swipe :loop="false" :width="150" class="mySwiper" :show-indicators="false">
+            <van-swipe-item v-for="item in musicList.list" :key="item" class="item">
+                <img :src="item.picUrl">
+                <span class="playCount">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-24gl-play"></use>
+                    </svg>
+                    {{changeCount(item.playCount)}}
+                </span>
+                <span class="name">{{item.name}}</span>
+            </van-swipe-item>
+        </van-swipe>
+    </div>
   </div>
 </template>
 
@@ -23,7 +37,18 @@ export default {
                 musicList.list = result.result
             }
         })
-        return {musicList}
+        function changeCount(num) { //格式化播放量
+            if(num>100000000) {
+                num = (num/100000000).toFixed(1) +'亿'
+                return num
+            }else if(num>10000) {
+                num = (num/10000).toFixed(1) +'万'
+                return num
+            }else {
+                return num
+            }
+        }
+        return {musicList,changeCount}
     }
 }
 </script>
@@ -51,7 +76,35 @@ export default {
             border-radius: 0.4rem;
         }
     }
-
+    .musicContent{
+        width: 100%;
+        height: 4rem;
+        .mySwiper {
+            height: 100%;
+            position: relative;
+            .playCount {
+                position: absolute;
+                right: .1rem;
+                top: .1rem  ;
+                font-size: 0.3rem;
+                color: white;
+                display: flex;
+                align-items: center;
+            }
+            .item {
+                padding: 0 .1rem;
+                
+                img {
+                width: 100%;
+                height: 3rem;
+                border: 0 solid ;
+                border-radius: .4rem;
+            }
+            }
+           
+            
+        }
+    }
 }
 
 </style>
