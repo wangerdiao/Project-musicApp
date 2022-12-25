@@ -7,6 +7,11 @@ const routes = [
     name: 'home',
     component: HomeView
   }, 
+  {
+    path: '/itemMusic',
+    name: 'ItemMusic',
+    component: () => import('../views/ItemMusic.vue') //路由懒加载
+  }
 ]
 
 const router = createRouter({
