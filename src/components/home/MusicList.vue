@@ -45,7 +45,6 @@ export default {
     onMounted(async () => {
       let result = await reqGetRecommandSong(); //获取每日推荐歌单的接口
       if (result.code == 200) {
-        console.log(result);
         musicList.list = result.result;
       }
     });
