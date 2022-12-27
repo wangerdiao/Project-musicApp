@@ -104,16 +104,18 @@ export default {
         align-items: center;
       }
       .item {
-        padding: 0 0.1rem;
-
+        margin-right: 0.14rem;
         img {
-          width: 100%;
-          height: 3rem;
-          border: 0 solid;
+          width: 100%;;
+          height: 2.6rem;
           border-radius: 0.4rem;
+        }
+        .name {
+          bottom: 0;
         }
       }
     }
+    
   }
 }
 </style>

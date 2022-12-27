@@ -22,13 +22,13 @@ export default {
             let result1 = await reqGetPlayList(id) //获取歌单详情页信息的接口
             if(result1.code == 200) {
                 state.playList = result1.playlist
-                sessionStorage.setItem('itemDetail',JSON.stringify(state))
             }
             let result2 = await reqGetMusicList(id) //获取歌单详情页歌曲的接口
             if(result2.code==200) {
                 state.musciList = result2.songs
                 sessionStorage.setItem('itemDetail',JSON.stringify(state))
             }
+            sessionStorage.setItem('itemDetail',JSON.stringify(state))
         })
         return {state}
     }

@@ -67,9 +67,7 @@ export default {
   props: ["playList"],
   setup(props) {
     //防止组件渲染时请求到的数据还没返回，也防止页面刷新数据丢失
-   if(!props.playList.creator) {
-    props.playList.creator = JSON.parse(sessionStorage.getItem('itemDetail')).playList.creator
-   }
+    props.playList.creator=''
   },
 };
 </script>
