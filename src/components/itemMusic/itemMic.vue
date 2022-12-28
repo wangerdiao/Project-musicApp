@@ -3,12 +3,29 @@
     <div class="itemMusciTop">
       <div class="itemMusciTopLeft">
         <svg class="icon" aria-hidden="true" >
-        <use xlink:href="#icon-a-zuojiantouzhixiangzuojiantou"></use>
-      </svg>
-      <span class="play">播放全部(共1首)</span>
+          <use xlink:href="#icon-bofang"></use>
+        </svg>
+      <span class="play">播放全部(共{{musicList.length}}首)</span>
       </div>
-      <div class="itemMusciTopRight">+收藏{3561}</div>
+      <div class="itemMusciTopRight">+收藏{{ changeCount(subscribedCount) }}</div>
     </div>
+<div>
+  <div class="itemMusicList" v-for="(item,index) in musicList" :key="index" :class="index===musicList.length-1?'musicList-final':''">
+      <span class="index">{{index+1}}</span>
+      <div class="music">
+        <div class="musicAuthor">
+          <span class="musicName">{{item.name}}</span>
+          <span class="author" v-for="(ar,index) in item.ar" :key="index">{{ ar.name }}</span>
+        </div>
+        <svg class="icon" aria-hidden="true" v-if="item.mv!=0">
+          <use xlink:href="#icon-24gl-playSquare"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true" >
+          <use xlink:href="#icon-hanbaocaidan"></use>
+        </svg>
+      </div>
+    </div>
+</div>
   </div>
 </template>
 
@@ -18,6 +35,19 @@ export default {
     props:['musicList','subscribedCount'],
     setup(props) {
         console.log(props);
+        function changeCount(num) {
+      //格式化播放量
+      if (num > 100000000) {
+        num = (num / 100000000).toFixed(1) + "亿";
+        return num;
+      } else if (num > 10000) {
+        num = (num / 10000).toFixed(1) + "万";
+        return num;
+      } else {
+        return num;
+      }
+    }
+    return {changeCount}
     }
     
 }
@@ -31,7 +61,7 @@ export default {
     border-top-right-radius: 0.4rem;
     padding: 0 0.2rem;
     margin-top: 0.2rem;
-    height: 10rem;
+    height:100%;
     .itemMusciTop{
       width: 100%;
       height: .8rem;
@@ -61,5 +91,37 @@ export default {
         margin-top: .09rem;
       }
     }
+    .itemMusicList{
+      width: 100%;
+      display: flex;
+      align-items: center;
+      margin-top: .2rem;
+      .index {
+        margin-right: .3rem;
+      }
+      .music{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        .musicAuthor{
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          .musicName{
+            font-size: 16px;
+            color: black;
+            font-weight: 800;
+          }
+          .author{
+            font-size: 13px;
+            color: rgb(163, 151, 151);
+          }
+        }
+      }
+     
+    }
+    .musicList-final {
+        padding-bottom: 3rem;
+      }
   }
 </style>
