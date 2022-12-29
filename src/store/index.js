@@ -17,15 +17,22 @@ export default createStore({
     ],
     playListIndex:0, //获取到音乐数组的序列号
     isPlayed:false, //音乐播放状态
+    showDetail:false,//展示歌曲详情页
   },
   getters: {
   },
   mutations: {
     changeIspalyed(state,value) { //改变音乐的播放和暂停
-      console.log('我成功改变了');
       state.isPlayed = value
-      console.log(value);
-      
+    },
+    upadtePlayList(state,value) { //修改播放列表
+      state.playList = value
+    },
+    updatePlayListIndex(state,value) { //修改播放列表的播放序号
+      state.playListIndex = value
+    },
+    updateShowDetail(state) {
+      state.showDetail = !state.showDetail
     }
   },
   actions: {

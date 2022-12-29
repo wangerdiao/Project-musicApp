@@ -1,12 +1,12 @@
 <template>
   <div class="footerMusic">
-    <div class="footerLeft">
+    <div class="footerLeft" @click="updateShowDetail()">
         <img :src="playList[playListIndex].al.picUrl" alt="">
     </div>
     <div class="footerRight" >
-        <span>{{ playList[playListIndex].name }}</span>
+        <span  @click="updateShowDetail()">{{ playList[playListIndex].name }}</span>
         <div class="iconList">
-            <svg class="icon" aria-hidden="true" @click="changePlay" v-if="!isPlayed.value">
+            <svg class="icon" aria-hidden="true" @click="changePlay" v-if="!isPlayed">
                 <use xlink:href="#icon-bofang"></use>
             </svg>
             <svg class="icon" aria-hidden="true"  @click="changePlay" v-else>
@@ -17,12 +17,15 @@
             </svg>
         </div>
         <audio  ref="audio" :src="` https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3 `"></audio>
+        <van-popup v-model:show="showDetail" position="bottom" :style="{ height: '100%',width:'100%' }">
+            内容
+        </van-popup>
     </div>
   </div>
 </template>
 
 <script>
-import { ref,onMounted, toRef, computed } from 'vue';
+import { ref,onMounted, toRef, computed, watch } from 'vue';
 import { mapMutations, useStore } from 'vuex';
 import hookStoreState  from '@/store/useMapState'
 export default {
@@ -30,17 +33,14 @@ export default {
     setup() {
         const audio = ref(null)
         const store = useStore()
-        const storeStateArr = hookStoreState(['playList','playListIndex','isPlayed']) ;
-        // const playList = computed(() => {store.state.playList})
-        // const playListIndex = computed(() => {store.state.playListIndex})
-        // const isPlayed = computed(() => {store.state.isPlayed})
+        const storeStateArr = hookStoreState(['playList','playListIndex','isPlayed','showDetail']) ;
         const getTrue = () => {return store.dispatch('toChangeIspalyed',true)}
         const getFalse = () => {return store.dispatch('toChangeIspalyed',false)}
+        const updateShowDetail = () => {return store.commit('updateShowDetail')}
         onMounted(() => {
-            console.log(store);
-
+            console.log(storeStateArr.playList.value[0].id);
         })
-        function changePlay() {
+        function changePlay() { //音乐播放和暂停的回调
             if(storeStateArr.isPlayed.value==false ) { //判断音乐是否播放
                 audio.value.play()
                 getTrue()
@@ -48,17 +48,19 @@ export default {
                 audio.value.pause()
                 getFalse()
             }
-            
         }
+        watch(() =>storeStateArr.playList.value[storeStateArr.playListIndex.value].id,(newValue,oldValue) => { //这里注意不能直接监听对象的属性，而是用一个函数传递
+            console.log('11');
+            audio.value.autoplay = true
+            getTrue()
+        })
         return {
             audio,
             changePlay,
             getTrue,
             getFalse,
+            updateShowDetail,
             ...storeStateArr,
-            // playList,
-            // playListIndex,
-            // isPlayed
         }
     },
 }

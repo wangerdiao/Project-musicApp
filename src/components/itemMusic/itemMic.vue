@@ -12,7 +12,7 @@
 <div>
   <div class="itemMusicList" v-for="(item,index) in musicList" :key="index" :class="index===musicList.length-1?'musicList-final':''">
       <span class="index">{{index+1}}</span>
-      <div class="music">
+      <div class="music" @click="playMusic(index)">
         <div class="musicAuthor">
           <span class="musicName">{{item.name}}</span>
           <span class="author" v-for="(ar,index) in item.ar" :key="index">{{ ar.name }}</span>
@@ -30,24 +30,32 @@
 </template>
 
 <script>
+import {  useStore } from 'vuex';
+
 export default {
     name:'itemMic',
     props:['musicList','subscribedCount'],
     setup(props) {
-        console.log(props);
+        const store = useStore()
+        const newPlayList =() => {return store.commit('upadtePlayList',props.musicList)}
+        const newPlayIndex =(index) => {return store.commit('updatePlayListIndex',index)}
         function changeCount(num) {
-      //格式化播放量
-      if (num > 100000000) {
-        num = (num / 100000000).toFixed(1) + "亿";
-        return num;
-      } else if (num > 10000) {
-        num = (num / 10000).toFixed(1) + "万";
-        return num;
-      } else {
-        return num;
+        //格式化播放量
+        if (num > 100000000) {
+          num = (num / 100000000).toFixed(1) + "亿";
+          return num;
+        } else if (num > 10000) {
+          num = (num / 10000).toFixed(1) + "万";
+          return num;
+        } else {
+          return num;
+        }
       }
-    }
-    return {changeCount}
+       function playMusic(index) {
+        newPlayList() //更新播放列表
+        newPlayIndex(index) //更新播放的音乐
+       }
+      return {changeCount,playMusic,newPlayList,newPlayIndex}
     }
     
 }
