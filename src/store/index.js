@@ -5,14 +5,19 @@ export default createStore({
     playList: [
       {
         al:{
-          id: 35046112,
-          name: "La La Land (Original Motion Picture Soundtrack)",
-          pic: 109951166611520340,
-          picUrl: "https://p2.music.126.net/sE6ZQr5oxJa6GORHU6naZQ==/109951166611520337.jpg",
-          pic_str: "109951166611520337"
+          id: 31590,
+          name: "月",
+          pic: 125344325582686,
+          picUrl:"https://p2.music.126.net/WxvsRijR_yaX0A6jgCDSng==/125344325582686.jpg",
         },
-        id: 34880251,
-        name: "City Of Stars (From \"La La Land\" Soundtrack)"
+        ar:[
+          {
+            id: 10223,
+            name: "闫月"
+          }
+        ],
+        id: 319354,
+        name:"她"
       }
     ],
     playListIndex:0, //获取到音乐数组的序列号

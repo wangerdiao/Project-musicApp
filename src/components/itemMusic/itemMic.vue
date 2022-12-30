@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { onMounted } from '@vue/runtime-core';
 import {  useStore } from 'vuex';
 
 export default {
@@ -55,6 +56,7 @@ export default {
         newPlayList() //更新播放列表
         newPlayIndex(index) //更新播放的音乐
        }
+       
       return {changeCount,playMusic,newPlayList,newPlayIndex}
     }
     

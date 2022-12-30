@@ -18,18 +18,20 @@
         </div>
         <audio  ref="audio" :src="` https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3 `"></audio>
         <van-popup v-model:show="showDetail" position="bottom" :style="{ height: '100%',width:'100%' }">
-            内容
+            <FooterMusicDetail :music="playList[playListIndex]" :play="changePlay" :isPlayed="isPlayed"/>
         </van-popup>
     </div>
   </div>
 </template>
 
 <script>
-import { ref,onMounted, toRef, computed, watch } from 'vue';
-import { mapMutations, useStore } from 'vuex';
+import { ref,onMounted, watch } from 'vue';
+import {  useStore } from 'vuex';
 import hookStoreState  from '@/store/useMapState'
+import FooterMusicDetail from './FooterMusicDetail.vue'
 export default {
     name:'Footer',
+    components:{FooterMusicDetail},
     setup() {
         const audio = ref(null)
         const store = useStore()
@@ -37,9 +39,7 @@ export default {
         const getTrue = () => {return store.dispatch('toChangeIspalyed',true)}
         const getFalse = () => {return store.dispatch('toChangeIspalyed',false)}
         const updateShowDetail = () => {return store.commit('updateShowDetail')}
-        onMounted(() => {
-            console.log(storeStateArr.playList.value[0].id);
-        })
+        
         function changePlay() { //音乐播放和暂停的回调
             if(storeStateArr.isPlayed.value==false ) { //判断音乐是否播放
                 audio.value.play()
@@ -50,7 +50,6 @@ export default {
             }
         }
         watch(() =>storeStateArr.playList.value[storeStateArr.playListIndex.value].id,(newValue,oldValue) => { //这里注意不能直接监听对象的属性，而是用一个函数传递
-            console.log('11');
             audio.value.autoplay = true
             getTrue()
         })
