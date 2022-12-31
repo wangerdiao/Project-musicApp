@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-
+import {reqGetMusicLyric} from '@/api/index'
 export default createStore({
   state: {
     playList: [
@@ -23,6 +23,7 @@ export default createStore({
     playListIndex:0, //获取到音乐数组的序列号
     isPlayed:false, //音乐播放状态
     showDetail:false,//展示歌曲详情页
+    showLyric:{},//展示歌词
   },
   getters: {
   },
@@ -36,13 +37,22 @@ export default createStore({
     updatePlayListIndex(state,value) { //修改播放列表的播放序号
       state.playListIndex = value
     },
-    updateShowDetail(state) {
+    updateShowDetail(state) { //修改展示歌曲详情页的布尔值
       state.showDetail = !state.showDetail
+    },
+    upadteShowLyric(state,value) {
+      state.showLyric = value
     }
   },
   actions: {
-    toChangeIspalyed(context,value) {
+    toChangeIspalyed(context,value) { //改变音乐的播放和暂停
       context.commit('changeIspalyed',value)
+    },
+    async getLyric(context,value) { //获取歌词
+      let result = await reqGetMusicLyric(value)
+      if(result.code == 200) {
+        context.commit('upadteShowLyric',result.lrc.lyric)
+      }
     }
   },
   modules: {

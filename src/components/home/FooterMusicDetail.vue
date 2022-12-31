@@ -22,10 +22,13 @@
             </svg>
         </div>
     </div>
-    <div class="musicMiddle">
-        <img src="@/assets/needle-ab.png" alt="" class="needle">
+    <div class="musicMiddle" v-if="showLrc">
+        <img src="@/assets/needle-ab.png" alt="" class="needle" :class="isPlayed == true?'needle_active':'needle'">
         <img src="@/assets/cd.png" alt="" class="cd">
-        <img :src="music.al.picUrl" alt="" class="picUrl">
+        <img :src="music.al.picUrl" alt="" class="picUrl" :class="isPlayed == true?'picUrl_active':'picUrl_paused'">
+    </div>
+    <div class="Lrc" v-else>
+        <p v-for="item in manageLyric()" :key="item">{{ item.lrc }} </p>
     </div>
     <div class="musicFooter">
         <div class="footerTop">
@@ -70,14 +73,34 @@
 
 <script>
 import {  useStore } from 'vuex';
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 export default {
     name:'FooterMusicDetail',
     props:['music','play','isPlayed'],
     setup(props) {
         const store = useStore()
+        const showLrc = false
         const updateShowDetail = () => {return store.commit('updateShowDetail')} 
-        return {updateShowDetail}
+        const lyric = computed(() => store.state.showLyric)
+        onMounted(() => {
+            manageLyric()
+        })
+        function manageLyric() {  //整理歌词的回调
+            let arr;
+            if(lyric!={}) {
+                arr=lyric.value.split(/[(\r\n)\r\n]+/).map(item => {
+                    let min=item.slice(item.indexOf('[')+1,item.indexOf(':'))
+                    let sec=item.slice(item.indexOf(':')+1,item.indexOf('.'))
+                    let mill=item.slice(item.indexOf('.')+1,item.indexOf(']'))
+                    let lrc=item.slice(item.indexOf(']')+1,item.length)
+                    return {min,sec,mill,lrc}
+                })
+                return arr
+            }
+           
+            
+        }
+         return {updateShowDetail,showLrc,lyric,manageLyric}
     }
 }
 </script>
@@ -138,7 +161,16 @@ export default {
         position: absolute;
         left: 46%;
         transform-origin:0 0;
-        transform: rotate(-10deg);
+        transform: rotate(-13deg);
+        transition:all 2s;
+    }
+    .needle_active {
+        width: 2rem;
+        height: 3rem;
+        position: absolute;
+        left: 46%;
+        transform-origin:0 0;
+        transform: rotate(0deg);
         transition:all 2s;
     }
     .cd {
@@ -154,10 +186,41 @@ export default {
         border-radius: 50%;
         position: absolute;
         bottom: 3.14rem;
+        animation: rotate_picUrl 10s linear infinite;
+    }
+    .picUrl_active {
+        animation-play-state: running;
+    }
+    .picUrl_paused {
+        animation-play-state: paused;
+    }
+    //磁盘转动
+    @keyframes rotate_picUrl {
+        0% {
+            transform: rotateZ(0deg);
+        }
+        100% {
+            transform: rotateZ(360deg);
+        }
+    }
+}
+.Lrc {
+    width: 100%;
+    height: 8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: scroll;
+    margin-top: .1rem;
+    p {
+        color: rgb(119, 114, 114);
+        margin-bottom:.2rem ;
     }
 }
 .musicFooter {
     width: 100%;
+    position: absolute;
+    top: 10rem;
     .footerTop {
         width: 100%;
         display: flex;
@@ -165,6 +228,7 @@ export default {
         .icon {
             width: .6rem;
             height: .6rem;
+            fill: #fff;
         }
     }
     .footer {
@@ -176,6 +240,7 @@ export default {
         .icon {
             width: .7rem;
             height: .7rem;
+            fill: #fff;
         }
     }
 }

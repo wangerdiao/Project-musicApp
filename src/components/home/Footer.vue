@@ -38,8 +38,11 @@ export default {
         const storeStateArr = hookStoreState(['playList','playListIndex','isPlayed','showDetail']) ;
         const getTrue = () => {return store.dispatch('toChangeIspalyed',true)}
         const getFalse = () => {return store.dispatch('toChangeIspalyed',false)}
+        const getLyric = (id) => {return store.dispatch('getLyric',id)}
         const updateShowDetail = () => {return store.commit('updateShowDetail')}
-        
+        onMounted(() => {
+            getLyric(storeStateArr.playList.value[storeStateArr.playListIndex.value].id) //加载时获取歌曲歌词
+        })
         function changePlay() { //音乐播放和暂停的回调
             if(storeStateArr.isPlayed.value==false ) { //判断音乐是否播放
                 audio.value.play()
@@ -49,9 +52,10 @@ export default {
                 getFalse()
             }
         }
-        watch(() =>storeStateArr.playList.value[storeStateArr.playListIndex.value].id,(newValue,oldValue) => { //这里注意不能直接监听对象的属性，而是用一个函数传递
+        watch(() =>storeStateArr.playList.value[storeStateArr.playListIndex.value].id,(newValue,oldValue) => { //监听歌曲id的变化，这里注意不能直接监听对象的属性，而是用一个函数传递
             audio.value.autoplay = true
             getTrue()
+            getLyric(storeStateArr.playList.value[storeStateArr.playListIndex.value].id)
         })
         return {
             audio,

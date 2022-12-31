@@ -7,3 +7,5 @@ export const reqGetRecommandSong = () => requests({url:'/personalized?limit=10',
 export const reqGetPlayList = (id) => requests({url:`/playlist/detail?id=${id}`,method:'GET'})
 //获取歌单详情歌曲的接口
 export const reqGetMusicList = (id) =>   requests({url:`/playlist/track/all?id=${id}&limit=20&offset=1`,method:'GET'})
+//获取歌曲歌词的接口
+export const reqGetMusicLyric = (id) =>   requests({url:`/lyric?id=${id}`,method:'GET'})
