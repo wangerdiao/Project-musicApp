@@ -2,7 +2,7 @@
     <img :src="music.al.picUrl" alt="" class="bigImg">
     <div class="musicTop">
         <div class="musicTopLeft">
-            <svg class="icon" aria-hidden="true"   @click="updateShowDetail()">
+            <svg class="icon" aria-hidden="true"   @click="change">
                 <use xlink:href="#icon-a-zuojiantouzhixiangzuojiantou"></use>
             </svg>
             <div class="author">
@@ -22,13 +22,13 @@
             </svg>
         </div>
     </div>
-    <div class="musicMiddle" v-if="showLrc">
+    <div class="musicMiddle" v-if="!showLrc">
         <img src="@/assets/needle-ab.png" alt="" class="needle" :class="isPlayed == true?'needle_active':'needle'">
         <img src="@/assets/cd.png" alt="" class="cd">
-        <img :src="music.al.picUrl" alt="" class="picUrl" :class="isPlayed == true?'picUrl_active':'picUrl_paused'">
+        <img :src="music.al.picUrl" alt="" class="picUrl" :class="isPlayed == true?'picUrl_active':'picUrl_paused'"  @click="showLrc = true">
     </div>
-    <div class="Lrc" v-else>
-        <p v-for="item in manageLyric()" :key="item">{{ item.lrc }} </p>
+    <div class="Lrc" v-else ref="musicLyric">
+        <p v-for="item in manageLyric()" :key="item" :class="currentTime*1000>item.time && currentTime*1000<item.next?'active':'p'">{{ item.lrc }} </p>
     </div>
     <div class="musicFooter">
         <div class="footerTop">
@@ -73,34 +73,64 @@
 
 <script>
 import {  useStore } from 'vuex';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch ,ref} from 'vue';
 export default {
     name:'FooterMusicDetail',
     props:['music','play','isPlayed'],
     setup(props) {
         const store = useStore()
-        const showLrc = false
+        let  showLrc = ref(false)
         const updateShowDetail = () => {return store.commit('updateShowDetail')} 
         const lyric = computed(() => store.state.showLyric)
+        const currentTime = computed(() => store.state.currentTime)
+        const musicLyric = ref(0)
         onMounted(() => {
             manageLyric()
+            // console.log(currentTime,222);
+            
         })
         function manageLyric() {  //整理歌词的回调
             let arr;
             if(lyric!={}) {
                 arr=lyric.value.split(/[(\r\n)\r\n]+/).map(item => {
-                    let min=item.slice(item.indexOf('[')+1,item.indexOf(':'))
-                    let sec=item.slice(item.indexOf(':')+1,item.indexOf('.'))
-                    let mill=item.slice(item.indexOf('.')+1,item.indexOf(']'))
+                    let min=item.slice(item.indexOf('[')+1,item.indexOf(':')) //分钟
+                    let sec=item.slice(item.indexOf(':')+1,item.indexOf('.')) //秒
+                    let mill=item.slice(item.indexOf('.')+1,item.indexOf(']')) //毫秒
                     let lrc=item.slice(item.indexOf(']')+1,item.length)
-                    return {min,sec,mill,lrc}
+                    let time = parseInt(min)*60*1000 + parseInt(sec)*1000 + parseInt(mill) //每段歌词在time秒数播放
+                    return {min,sec,mill,lrc,time}
                 })
+                arr.forEach((item,i) => {
+                    if(i===arr.length-1) {
+                        item.next = 0
+                    }else {
+                        item.next = arr[i+1].time
+                    }
+                });
+                // console.log(arr);
                 return arr
             }
-           
-            
         }
-         return {updateShowDetail,showLrc,lyric,manageLyric}
+       function change() { //返回歌单展示页且修改展示磁盘
+        updateShowDetail()
+        showLrc.value = false
+       }
+        watch(currentTime,(newValue,oldValue)=> {
+            let p = document.querySelector('p.active')
+            if(p && p.offsetTop>270) {
+                musicLyric.value.scrollTop = p.offsetTop-250
+            }
+            
+            
+        })
+         return {
+            updateShowDetail,
+            showLrc,lyric,
+            manageLyric,
+            currentTime,
+            musicLyric,
+            change
+        }
     }
 }
 </script>
@@ -212,9 +242,14 @@ export default {
     align-items: center;
     overflow: scroll;
     margin-top: .1rem;
+    scroll-behavior: smooth;
     p {
         color: rgb(119, 114, 114);
         margin-bottom:.2rem ;
+    }
+    .active {
+        color: #fff;
+        font-size: .4rem;
     }
 }
 .musicFooter {

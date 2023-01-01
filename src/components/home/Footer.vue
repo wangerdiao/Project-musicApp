@@ -16,7 +16,7 @@
                 <use xlink:href="#icon-24gf-playlistHeart4"></use>
             </svg>
         </div>
-        <audio  ref="audio" :src="` https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3 `"></audio>
+        <audio  ref="audio" :src="` https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3 `" @timeupdate="getCurrentPlayTime"></audio>
         <van-popup v-model:show="showDetail" position="bottom" :style="{ height: '100%',width:'100%' }">
             <FooterMusicDetail :music="playList[playListIndex]" :play="changePlay" :isPlayed="isPlayed"/>
         </van-popup>
@@ -35,13 +35,16 @@ export default {
     setup() {
         const audio = ref(null)
         const store = useStore()
-        const storeStateArr = hookStoreState(['playList','playListIndex','isPlayed','showDetail']) ;
+        const storeStateArr = hookStoreState(['playList','playListIndex','isPlayed','showDetail','currentTime']) ;
         const getTrue = () => {return store.dispatch('toChangeIspalyed',true)}
         const getFalse = () => {return store.dispatch('toChangeIspalyed',false)}
         const getLyric = (id) => {return store.dispatch('getLyric',id)}
         const updateShowDetail = () => {return store.commit('updateShowDetail')}
+        const updateTime = (time) => {return store.commit('updateCurrentTime',time)}
         onMounted(() => {
             getLyric(storeStateArr.playList.value[storeStateArr.playListIndex.value].id) //加载时获取歌曲歌词
+            console.log(audio);
+            
         })
         function changePlay() { //音乐播放和暂停的回调
             if(storeStateArr.isPlayed.value==false ) { //判断音乐是否播放
@@ -51,6 +54,9 @@ export default {
                 audio.value.pause()
                 getFalse()
             }
+        }
+        function getCurrentPlayTime() {  //修改vuex中歌曲当前播放的时间秒数
+            updateTime(audio.value.currentTime)
         }
         watch(() =>storeStateArr.playList.value[storeStateArr.playListIndex.value].id,(newValue,oldValue) => { //监听歌曲id的变化，这里注意不能直接监听对象的属性，而是用一个函数传递
             audio.value.autoplay = true
@@ -63,6 +69,8 @@ export default {
             getTrue,
             getFalse,
             updateShowDetail,
+            updateTime,
+            getCurrentPlayTime,
             ...storeStateArr,
         }
     },

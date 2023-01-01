@@ -24,6 +24,7 @@ export default createStore({
     isPlayed:false, //音乐播放状态
     showDetail:false,//展示歌曲详情页
     showLyric:{},//展示歌词
+    currentTime:0,//当前歌曲播放的时长
   },
   getters: {
   },
@@ -40,8 +41,11 @@ export default createStore({
     updateShowDetail(state) { //修改展示歌曲详情页的布尔值
       state.showDetail = !state.showDetail
     },
-    upadteShowLyric(state,value) {
+    upadteShowLyric(state,value) { //修改歌词
       state.showLyric = value
+    },
+    updateCurrentTime(state,value) { //修改歌曲播放的时长
+      state.currentTime = value
     }
   },
   actions: {
