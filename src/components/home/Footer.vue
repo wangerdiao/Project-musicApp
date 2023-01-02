@@ -16,16 +16,16 @@
                 <use xlink:href="#icon-24gf-playlistHeart4"></use>
             </svg>
         </div>
-        <audio  ref="audio" :src="` https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3 `" @timeupdate="getCurrentPlayTime"></audio>
+        <audio  ref="audio" :src="` https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id}.mp3 `" @timeupdate="getCurrentPlayTime" @canplay="canplay"></audio>
         <van-popup v-model:show="showDetail" position="bottom" :style="{ height: '100%',width:'100%' }">
-            <FooterMusicDetail :music="playList[playListIndex]" :play="changePlay" :isPlayed="isPlayed"/>
+            <FooterMusicDetail :music="playList[playListIndex]" :play="changePlay" :isPlayed="isPlayed" :addDuration="addDuration"/>
         </van-popup>
     </div>
   </div>
 </template>
 
 <script>
-import { ref,onMounted, watch } from 'vue';
+import { ref,onMounted, watch ,onUpdated,nextTick} from 'vue';
 import {  useStore } from 'vuex';
 import hookStoreState  from '@/store/useMapState'
 import FooterMusicDetail from './FooterMusicDetail.vue'
@@ -41,11 +41,16 @@ export default {
         const getLyric = (id) => {return store.dispatch('getLyric',id)}
         const updateShowDetail = () => {return store.commit('updateShowDetail')}
         const updateTime = (time) => {return store.commit('updateCurrentTime',time)}
+        const updateDuration = (time) => {return store.commit('updateDuration',time)}
         onMounted(() => {
             getLyric(storeStateArr.playList.value[storeStateArr.playListIndex.value].id) //加载时获取歌曲歌词
-            console.log(audio);
-            
         })
+        onUpdated(() => {
+            canplay()
+        })
+       function canplay() { //音乐加载完成时获取歌曲的总时长
+        addDuration()
+       }
         function changePlay() { //音乐播放和暂停的回调
             if(storeStateArr.isPlayed.value==false ) { //判断音乐是否播放
                 audio.value.play()
@@ -58,10 +63,16 @@ export default {
         function getCurrentPlayTime() {  //修改vuex中歌曲当前播放的时间秒数
             updateTime(audio.value.currentTime)
         }
+        function addDuration() { //获取歌曲总时长
+            if(!isNaN(audio.value.duration)) {
+                updateDuration(audio.value.duration)
+            }
+        }
         watch(() =>storeStateArr.playList.value[storeStateArr.playListIndex.value].id,(newValue,oldValue) => { //监听歌曲id的变化，这里注意不能直接监听对象的属性，而是用一个函数传递
             audio.value.autoplay = true
             getTrue()
             getLyric(storeStateArr.playList.value[storeStateArr.playListIndex.value].id)
+            canplay() 
         })
         return {
             audio,
@@ -71,6 +82,9 @@ export default {
             updateShowDetail,
             updateTime,
             getCurrentPlayTime,
+            updateDuration,
+            addDuration,
+            canplay,
             ...storeStateArr,
         }
     },

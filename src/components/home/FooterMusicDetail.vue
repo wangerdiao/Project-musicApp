@@ -47,12 +47,15 @@
             <svg class="icon" aria-hidden="true"  >
                 <use xlink:href="#icon-24gl-repeatInfinite2"></use>
             </svg>
+        </div> 
+        <div class="footerContent">
+            <input type="range" class="range" min="0" step="0.05" :max="duration" v-model="currentTime">
         </div>
         <div class="footer">
             <svg class="icon" aria-hidden="true"  >
                 <use xlink:href="#icon-danxunhuan"></use>
             </svg>
-            <svg class="icon" aria-hidden="true"  >
+            <svg class="icon" aria-hidden="true"  @click="playMusic(-1)">
                 <use xlink:href="#icon-shangyishoushangyige"></use>
             </svg>
             <svg class="icon" aria-hidden="true"  v-if="!isPlayed" @click="play()">
@@ -61,7 +64,7 @@
             <svg class="icon" aria-hidden="true"  v-else @click="play()">
                 <use xlink:href="#icon-zanting"></use>
             </svg>
-            <svg class="icon" aria-hidden="true"  >
+            <svg class="icon" aria-hidden="true"  @click="playMusic(1)">
                 <use xlink:href="#icon-xiayigexiayishou"></use>
             </svg>
             <svg class="icon" aria-hidden="true"  >
@@ -76,18 +79,21 @@ import {  useStore } from 'vuex';
 import { computed, onMounted, watch ,ref} from 'vue';
 export default {
     name:'FooterMusicDetail',
-    props:['music','play','isPlayed'],
+    props:['music','play','isPlayed','addDuration'],
     setup(props) {
         const store = useStore()
         let  showLrc = ref(false)
         const updateShowDetail = () => {return store.commit('updateShowDetail')} 
         const lyric = computed(() => store.state.showLyric)
         const currentTime = computed(() => store.state.currentTime)
+        const playListIndex = computed(() => store.state.playListIndex)
+        const duration = computed(() => store.state.duration)
+        const updatePlayListIndex = (num) => {return store.commit('updatePlayListIndex',num)}
+        const playList = computed(() => store.state.playList)
         const musicLyric = ref(0)
         onMounted(() => {
             manageLyric()
-            // console.log(currentTime,222);
-            
+            props.addDuration()
         })
         function manageLyric() {  //整理歌词的回调
             let arr;
@@ -101,8 +107,8 @@ export default {
                     return {min,sec,mill,lrc,time}
                 })
                 arr.forEach((item,i) => {
-                    if(i===arr.length-1) {
-                        item.next = 0
+                    if(i===arr.length-1 || isNaN(arr[i+1].time)) {
+                        item.next = 10000000
                     }else {
                         item.next = arr[i+1].time
                     }
@@ -115,13 +121,27 @@ export default {
         updateShowDetail()
         showLrc.value = false
        }
+       function playMusic(num) { //切换歌曲上一首下一首
+            let index = playListIndex.value + num
+            if(index<0) {
+                index = playList.value.length-1
+            }else if(index>playList.value.length-1) {
+                index = 0
+            }
+            updatePlayListIndex(index)
+       }
         watch(currentTime,(newValue,oldValue)=> {
             let p = document.querySelector('p.active')
             if(p && p.offsetTop>270) {
-                musicLyric.value.scrollTop = p.offsetTop-250
+                musicLyric.value.scrollTop = p.offsetTop-250  //歌词在固定位置滚动
             }
+            console.log(newValue);
+            console.log(duration.value);
             
-            
+            if(newValue == duration.value) { //如果歌曲播放完就播放下一首歌
+                console.log(1);
+                playMusic(1)
+            }
         })
          return {
             updateShowDetail,
@@ -129,7 +149,12 @@ export default {
             manageLyric,
             currentTime,
             musicLyric,
-            change
+            change,
+            playMusic,
+            playListIndex,
+            playList,
+            duration,
+            updatePlayListIndex
         }
     }
 }
@@ -256,6 +281,7 @@ export default {
     width: 100%;
     position: absolute;
     top: 10rem;
+    
     .footerTop {
         width: 100%;
         display: flex;
@@ -266,10 +292,17 @@ export default {
             fill: #fff;
         }
     }
+    .footerContent {
+        margin-top: .8rem;
+        .range {
+            width: 100%;
+            height: .06rem;
+        }
+    }
     .footer {
         display: flex;
         justify-content: space-between;
-        margin-top: 1.2rem;
+        margin-top: .4rem;
         margin-right: 10px;
         margin-left: 10px;
         .icon {

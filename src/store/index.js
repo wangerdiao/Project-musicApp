@@ -25,6 +25,7 @@ export default createStore({
     showDetail:false,//展示歌曲详情页
     showLyric:{},//展示歌词
     currentTime:0,//当前歌曲播放的时长
+    duration:0,//歌曲总时长
   },
   getters: {
   },
@@ -46,6 +47,9 @@ export default createStore({
     },
     updateCurrentTime(state,value) { //修改歌曲播放的时长
       state.currentTime = value
+    },
+    updateDuration(state,value) { //修改歌曲总时长
+        state.duration = value
     }
   },
   actions: {
