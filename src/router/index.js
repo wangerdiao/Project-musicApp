@@ -11,6 +11,11 @@ const routes = [
     path: '/itemMusic',
     name: 'ItemMusic',
     component: () => import('../views/ItemMusic.vue') //路由懒加载
+  }, 
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('../views/Search.vue') //路由懒加载
   }
 ]
 
