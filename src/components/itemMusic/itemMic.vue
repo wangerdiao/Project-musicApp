@@ -10,7 +10,7 @@
       <div class="itemMusciTopRight">+收藏{{ changeCount(subscribedCount) }}</div>
     </div>
 <div>
-  <div class="itemMusicList" v-for="(item,index) in musicList" :key="index" :class="index===musicList.length-1?'musicList-final':''">
+  <!-- <div class="itemMusicList" v-for="(item,index) in musicList" :key="index" :class="index===musicList.length-1?'musicList-final':''">
       <span class="index">{{index+1}}</span>
       <div class="music" @click="playMusic(index)">
         <div class="musicAuthor">
@@ -24,7 +24,8 @@
           <use xlink:href="#icon-hanbaocaidan"></use>
         </svg>
       </div>
-    </div>
+    </div> -->
+    <Music :musicList="musicList" :playMusic="playMusic"/>
 </div>
   </div>
 </template>
@@ -32,8 +33,9 @@
 <script>
 import { onMounted } from '@vue/runtime-core';
 import {  useStore } from 'vuex';
-
+import Music from '@/components/Music.vue'
 export default {
+  components: { Music },
     name:'itemMic',
     props:['musicList','subscribedCount'],
     setup(props) {
@@ -101,37 +103,37 @@ export default {
         margin-top: .09rem;
       }
     }
-    .itemMusicList{
-      width: 100%;
-      display: flex;
-      align-items: center;
-      margin-top: .2rem;
-      .index {
-        margin-right: .3rem;
-      }
-      .music{
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        .musicAuthor{
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          .musicName{
-            font-size: 16px;
-            color: black;
-            font-weight: 800;
-          }
-          .author{
-            font-size: 13px;
-            color: rgb(163, 151, 151);
-          }
-        }
-      }
+    // .itemMusicList{
+    //   width: 100%;
+    //   display: flex;
+    //   align-items: center;
+    //   margin-top: .2rem;
+    //   .index {
+    //     margin-right: .3rem;
+    //   }
+    //   .music{
+    //     width: 100%;
+    //     display: flex;
+    //     justify-content: space-between;
+    //     .musicAuthor{
+    //       width: 100%;
+    //       display: flex;
+    //       flex-direction: column;
+    //       .musicName{
+    //         font-size: 16px;
+    //         color: black;
+    //         font-weight: 800;
+    //       }
+    //       .author{
+    //         font-size: 13px;
+    //         color: rgb(163, 151, 151);
+    //       }
+    //     }
+    //   }
      
-    }
-    .musicList-final {
-        padding-bottom: 3rem;
-      }
+    // }
+    // .musicList-final {
+    //     padding-bottom: 3rem;
+    //   }
   }
 </style>

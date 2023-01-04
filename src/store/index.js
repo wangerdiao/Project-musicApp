@@ -25,7 +25,8 @@ export default createStore({
     showDetail:false,//展示歌曲详情页
     showLyric:{},//展示歌词
     currentTime:0,//当前歌曲播放的时长
-    duration:0,//歌曲总时长
+    duration:0,//歌曲总时长,
+    isLogin:false ,//判断是否登录
   },
   getters: {
   },
@@ -50,6 +51,9 @@ export default createStore({
     },
     updateDuration(state,value) { //修改歌曲总时长
         state.duration = value
+    },
+    addPlayMusic(state,value) {  //添加播放的歌曲
+      state.playList.push(value)
     }
   },
   actions: {

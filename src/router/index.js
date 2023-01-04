@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import store from '@/store/index'
 
 const routes = [
   {
@@ -17,6 +18,25 @@ const routes = [
     name: 'Search',
     component: () => import('../views/Search.vue') //路由懒加载
   }
+  , 
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue') //路由懒加载
+  }, 
+  {
+    path: '/userInfo',
+    name: 'UserInfo',
+    component: () => import('../views/userInfo.vue') ,//路由懒加载
+    beforeEnter(to,from,next) {
+      if(store.state.isLogin==true) {
+        next()
+      }else {
+        next('/login')
+      }
+    }
+  }
+
 ]
 
 const router = createRouter({

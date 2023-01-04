@@ -69,7 +69,7 @@ export default {
             }
         }
         watch(() =>storeStateArr.playList.value[storeStateArr.playListIndex.value].id,(newValue,oldValue) => { //监听歌曲id的变化，这里注意不能直接监听对象的属性，而是用一个函数传递
-            audio.value.autoplay = true
+            audio.value.autoplay = true                    
             getTrue()
             getLyric(storeStateArr.playList.value[storeStateArr.playListIndex.value].id)
             canplay() 
