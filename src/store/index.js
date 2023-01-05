@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import {reqGetMusicLyric} from '@/api/index'
+import {reqGetMusicLyric,reqGetLogin} from '@/api/index'
 export default createStore({
   state: {
     playList: [
@@ -27,6 +27,7 @@ export default createStore({
     currentTime:0,//当前歌曲播放的时长
     duration:0,//歌曲总时长,
     isLogin:false ,//判断是否登录
+    isShowFooterMusic:true,//判断是否显示Footer组件
   },
   getters: {
   },
@@ -54,6 +55,12 @@ export default createStore({
     },
     addPlayMusic(state,value) {  //添加播放的歌曲
       state.playList.push(value)
+    },
+    updateIsShowFooterMusic(state,value) { //修改底部组件的显示
+      state.isShowFooterMusic = value
+    },
+    updateIsLogin(state,value) { //修改是否登录的布尔值
+      state.isLogin = value
     }
   },
   actions: {
@@ -65,6 +72,10 @@ export default createStore({
       if(result.code == 200) {
         context.commit('upadteShowLyric',result.lrc.lyric)
       }
+    },
+    async getLogin(context,value) { //登录的回调
+      let res = await reqGetLogin(value)
+      return res
     }
   },
   modules: {

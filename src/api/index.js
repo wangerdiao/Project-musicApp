@@ -11,5 +11,6 @@ export const reqGetMusicList = (id) =>   requests({url:`/playlist/track/all?id=$
 export const reqGetMusicLyric = (id) =>   requests({url:`/lyric?id=${id}`,method:'GET'})
 //搜索关键字的接口
 export const reqGetSearchMusic = (key) =>   requests({url:`/search?keywords=${key}`,method:'GET'})
-
+//用户手机登录的接口  
+export const reqGetLogin = (data) => requests({url:`/login/cellphone?phone=${data.phone}&password=${data.pwd}`,method:'GET'})
 

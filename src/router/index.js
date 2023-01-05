@@ -43,5 +43,11 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-
+router.beforeEach((to,from)=> {
+  if(to.path=='/login') {  //判断在登陆页面不展示底部组件
+    store.commit('updateIsShowFooterMusic',false)
+  }else {
+    store.commit('updateIsShowFooterMusic',true)
+  }
+})
 export default router

@@ -1,6 +1,6 @@
 <template>
   <router-view/>
-  <Footer />
+  <Footer v-show="$store.state.isShowFooterMusic"/>
 </template>
 <script>
 import Footer from '@/components/home/Footer.vue'
