@@ -28,6 +28,8 @@ export default createStore({
     duration:0,//歌曲总时长,
     isLogin:false ,//判断是否登录
     isShowFooterMusic:true,//判断是否显示Footer组件
+    token:'',//判断用户登录信息
+    userInfo:{},//存储用户信息
   },
   getters: {
   },
@@ -61,6 +63,14 @@ export default createStore({
     },
     updateIsLogin(state,value) { //修改是否登录的布尔值
       state.isLogin = value
+    },
+    updateToken(state,value) {  //存储token
+      state.token = value
+      localStorage.setItem('token',value)
+    },
+    userInfo(state,value) {
+      state.userInfo = value
+      localStorage.setItem('userInfo',JSON.stringify(value))
     }
   },
   actions: {

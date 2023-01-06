@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { ref,onMounted, watch ,onUpdated,nextTick} from 'vue';
+import { ref,onMounted, watch ,onUpdated} from 'vue';
 import {  useStore } from 'vuex';
 import hookStoreState  from '@/store/useMapState'
 import FooterMusicDetail from './FooterMusicDetail.vue'

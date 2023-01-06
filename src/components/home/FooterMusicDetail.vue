@@ -135,9 +135,6 @@ export default {
             if(p && p.offsetTop>270) {
                 musicLyric.value.scrollTop = p.offsetTop-250  //歌词在固定位置滚动
             }
-            console.log(newValue);
-            console.log(duration.value);
-            
             if(newValue == duration.value) { //如果歌曲播放完就播放下一首歌
                 console.log(1);
                 playMusic(1)

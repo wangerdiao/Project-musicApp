@@ -29,7 +29,7 @@ const routes = [
     name: 'UserInfo',
     component: () => import('../views/userInfo.vue') ,//路由懒加载
     beforeEnter(to,from,next) {
-      if(store.state.isLogin==true) {
+      if(store.state.isLogin==true || localStorage.getItem('token')) {
         next()
       }else {
         next('/login')

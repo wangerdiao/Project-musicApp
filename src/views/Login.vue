@@ -29,13 +29,16 @@ export default {
       let pwd = ref('')
       const getLogin = (value) => {return store.dispatch('getLogin',value)}
       const updateIsLogin = (value) => {return store.commit('updateIsLogin',value)}
+      const updateToken = (value) => {return store.commit('updateToken',value)}
+      const userInfo = (value) => {return store.commit('userInfo',value)}
       async function login() {
         let result = await getLogin({phone:phone.value,pwd:pwd.value})
         console.log(result);
         if(result.code==200) {
           router.push({path:'/userInfo'})
           updateIsLogin(true)
-          
+          updateToken(result.token)
+          userInfo(result.profile)
         }else {
           alert('手机号或者密码错误')
         }
@@ -45,7 +48,9 @@ export default {
         pwd,
         login,
         getLogin,
-        updateIsLogin
+        updateIsLogin,
+        updateToken,
+        userInfo,
       }
     }
 }
